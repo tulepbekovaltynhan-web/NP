@@ -339,6 +339,12 @@ textarea.inp{height:96px;padding:12px 16px;resize:none}
 .welcome .orb::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.45),transparent 50%)}
 .welcome .orb span{position:relative;color:#fff;font-weight:700;font-size:26px;letter-spacing:-.03em}
 .logo{font-weight:700;font-size:30px;letter-spacing:-.03em}
+.lgsvg{display:inline-block;vertical-align:middle;width:auto}
+:root{--lgneo:#241453;--lgpay:#520BA7}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--lgneo:#FFFFFF;--lgpay:#CFC4FE} }
+:root[data-theme="dark"]{--lgneo:#FFFFFF;--lgpay:#CFC4FE}
+.lgsvg.inv{--lgneo:#FFFFFF;--lgpay:#CFC4FE}
+.lgsvg.onlight{--lgneo:#241453;--lgpay:#520BA7}
 .lgo{display:inline-flex;align-items:center;gap:.06em;font-weight:800;letter-spacing:-.035em;color:var(--fg);line-height:1;white-space:nowrap}
 .lgo .c{display:inline-grid;place-items:center;width:1.62em;height:1.62em;border-radius:50%;border:.1em solid var(--violet);color:var(--violet);font-size:.8em;letter-spacing:-.03em;padding-bottom:.06em}
 .lgo.inv{color:#fff} .lgo.inv .c{border-color:#fff;color:#fff}
@@ -351,6 +357,7 @@ textarea.inp{height:96px;padding:12px 16px;resize:none}
 .splash.out{opacity:0;pointer-events:none}
 .splash .wm{font-weight:800;font-size:46px;letter-spacing:-.04em;color:#241453;display:flex;align-items:baseline;white-space:nowrap}
 .splash .wm b{color:#520BA7}
+.sp2 .tail{color:#520BA7}
 .splash .sub{position:absolute;left:0;right:0;bottom:calc(46px + env(safe-area-inset-bottom,0px));text-align:center;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#7C75A3;opacity:0;animation:spFade .6s 1.5s forwards}
 @keyframes spFade{to{opacity:1}}
 /* 1 — пиксели собираются в логотип */
@@ -360,7 +367,7 @@ textarea.inp{height:96px;padding:12px 16px;resize:none}
 @keyframes pxIn{from{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(.3)}to{opacity:1;transform:none}}
 @keyframes gridOut{to{transform:scale(.25) rotate(45deg);opacity:0}}
 .sp1 .core{display:flex;flex-direction:column;align-items:center;gap:16px}
-.sp1 .orb2{width:104px;height:104px;border-radius:50%;background:linear-gradient(150deg,#723DD6,#520BA7 55%,#241453);display:grid;place-items:center;color:#fff;font-weight:800;font-size:34px;box-shadow:0 24px 50px rgba(82,11,167,.35);opacity:0;transform:scale(.4);animation:orbPop .6s 1.35s cubic-bezier(.2,.9,.25,1.3) forwards}
+.sp1 .orb2{width:auto;height:auto;background:none;display:grid;place-items:center;color:#fff;font-weight:800;font-size:34px;opacity:0;transform:scale(.4);animation:orbPop .6s 1.35s cubic-bezier(.2,.9,.25,1.3) forwards}
 @keyframes orbPop{to{opacity:1;transform:none}}
 .sp1 .wm{font-size:38px;opacity:0;transform:translateY(14px);animation:wmUp .5s 1.6s ease-out forwards}
 @keyframes wmUp{to{opacity:1;transform:none}}
@@ -370,9 +377,9 @@ textarea.inp{height:96px;padding:12px 16px;resize:none}
 .sp2 .wm{font-size:58px;align-items:center}
 .sp2 .c2{position:relative;width:94px;height:94px;display:grid;place-items:center;flex:none}
 .sp2 .c2 svg{position:absolute;inset:0;transform:rotate(-90deg)}
-.sp2 .c2 circle{fill:none;stroke:#520BA7;stroke-width:6;stroke-linecap:round;stroke-dasharray:283;stroke-dashoffset:283;animation:draw .8s .1s cubic-bezier(.6,0,.3,1) forwards}
+.sp2 .c2 circle{fill:none;stroke:url(#npRing);stroke-width:6;stroke-linecap:round;stroke-dasharray:283;stroke-dashoffset:283;animation:draw .8s .1s cubic-bezier(.6,0,.3,1) forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
-.sp2 .c2 i{font-style:normal;color:#520BA7;font-size:44px;opacity:0;transform:scale(.6);animation:brIn .45s .75s cubic-bezier(.2,.9,.25,1.3) forwards}
+.sp2 .c2 i{font-style:normal;color:#241453;font-size:44px;opacity:0;transform:scale(.6);animation:brIn .45s .75s cubic-bezier(.2,.9,.25,1.3) forwards}
 .sp2 .br{display:inline-block;color:#520BA7;opacity:0;animation:brIn .45s .15s cubic-bezier(.2,.9,.25,1.3) forwards}
 @keyframes brIn{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
 .sp2 .mid,.sp2 .tail{display:inline-block;overflow:hidden;max-width:0;vertical-align:bottom}
@@ -406,8 +413,9 @@ textarea.inp{height:96px;padding:12px 16px;resize:none}
 @media (prefers-reduced-motion: reduce){ *{animation:none!important;transition:none!important} .check path{stroke-dashoffset:0} }
 </style>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="npRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#723DD6"/><stop offset="1" stop-color="#57DFD3"/></linearGradient></defs></svg>
 <aside class="side">
-  <div style="font-size:26px"><span class="lgo"><span class="c">neo</span>pay</span></div>
+  <div id="sideLogo"></div>
   <h1>Прототип кошелька электронных денег</h1>
   <p>Демо: деньги ненастоящие, банки, ЕРИП, СБП и шлюз имитируются.</p>
   <p>Плашка <span class="kbd">Демо</span> сверху экрана открывает панель для показа: режим презентации, резидент или нерезидент, касса магазина, комплаенс, доходы.</p>
@@ -466,7 +474,12 @@ const PLACES = [
   {c:'rb',name:'Книжная «Абзац»',cat:'store',city:'Минск, ул. Октябрьская'},{c:'rb',name:'Бистро «Вилка»',cat:'cafe',city:'Брест'},
   {c:'tr',name:'Kemer Kahve Evi',cat:'cafe',city:'Кемер'},{c:'tr',name:'Antalya Market',cat:'store',city:'Анталья'},
   {c:'tr',name:'Pamukkale Tur',cat:'tour',city:'Анталья'},{c:'tr',name:'Bodrum Balık',cat:'cafe',city:'Бодрум'},{c:'tr',name:'İstanbul Çarşı',cat:'store',city:'Стамбул'}];
-function LOGO(cls,size){ return '<span class="lgo '+(cls||'')+'"'+(size?' style="font-size:'+size+'px"':'')+'><span class="c">neo</span>pay</span>'; }
+const LG_RING='<circle cx="60" cy="60" r="48.5" fill="none" stroke="url(#npRing)" stroke-width="7"/>';
+const LG_NEO='<text x="60" y="70" text-anchor="middle" font-family="__F__" font-weight="800" font-size="38" textLength="64" lengthAdjust="spacingAndGlyphs" style="fill:var(--lgneo)">neo</text>'.replace('__F__','Manrope, system-ui, -apple-system, Segoe UI, sans-serif');
+function LOGO(cls,size){ const h=Math.round((size||20)*1.7);
+  return '<svg class="lgsvg '+(cls||'')+'" viewBox="0 0 272 120" style="height:'+h+'px" role="img" aria-label="Neo Pay">'+LG_RING+LG_NEO+
+   '<text x="130" y="77" font-family="Manrope, system-ui, -apple-system, Segoe UI, sans-serif" font-weight="800" font-size="62" textLength="126" lengthAdjust="spacingAndGlyphs" style="fill:var(--lgpay)">pay</text></svg>'; }
+function MARK(px,cls){ return '<svg class="lgsvg '+(cls||'')+'" viewBox="0 0 120 120" style="height:'+px+'px" aria-hidden="true">'+LG_RING+LG_NEO+'</svg>'; }
 const STORIES = [
   { id:"s1", title:"Как платить в Турции", text:"Откройте QR, наведите на код в кафе или магазине. Сумму в лирах пересчитаем в BYN по курсу банка до оплаты.", c1:"#520BA7", c2:"#57DFD3" },
   { id:"s2", title:"Пополнение из России", text:"Переведите рубли через СБП со своего счёта. Банк поменяет их на BYN, мы покажем курс и комиссию заранее.", c1:"#241453", c2:"#723DD6" },
@@ -666,7 +679,7 @@ function checkOut(f,c){ // проверки перед списанием
 /* ---------- screens ---------- */
 const V = {};
 V.welcome = () => '<div class="welcome">'+
-  '<div class="mark"><div class="orb"><span>neo</span></div>'+LOGO('',34)+'<p class="tag">Электронные деньги</p></div>'+
+  '<div class="mark">'+MARK(110)+LOGO('',30)+'<p class="tag">Электронные деньги</p></div>'+
   '<div class="acts"><button class="btn" data-a="startOpen">Открыть кошелёк</button><button class="btn ghost" data-a="demoLogin">Войти</button>'+
   '<p class="small" style="margin:8px 0 0">'+CFG.issuer+'</p></div></div>';
 
@@ -1191,7 +1204,7 @@ V.offers = () => hdr('Предложения')+'<div class="pad"><div class="lis
   note('Кешбэк — только за покупку и только за счёт Neo Pay или магазина: электронные деньги выпускаются под 100% обеспечение. Процентов на остаток нет. Налоги и правила рекламы — на согласовании.')+'</div>';
 V.widget = () => hdr('Виджет на экран')+'<div class="pad"><p class="lead">Баланс и оплата по QR прямо с экрана телефона — без открытия приложения.</p>'+
   '<div style="border-radius:30px;padding:18px;background:linear-gradient(160deg,#C9B8FF,#C6F3EE);display:grid;grid-template-columns:1fr 1fr;gap:12px">'+
-   '<div class="glass" style="border-radius:22px;padding:14px;aspect-ratio:1;display:flex;flex-direction:column;justify-content:space-between;color:#2A2160">'+LOGO('',15)+'<div><div style="font-size:12px;opacity:.7">Баланс</div><div style="font-weight:700;font-size:18px">'+(S.hide?'•••':money(avail()))+'</div></div></div>'+
+   '<div class="glass" style="border-radius:22px;padding:14px;aspect-ratio:1;display:flex;flex-direction:column;justify-content:space-between;color:#2A2160">'+LOGO('onlight',14)+'<div><div style="font-size:12px;opacity:.7">Баланс</div><div style="font-weight:700;font-size:18px">'+(S.hide?'•••':money(avail()))+'</div></div></div>'+
    '<div style="border-radius:22px;aspect-ratio:1;background:linear-gradient(140deg,#8A5CF0,#520BA7);color:#fff;display:grid;place-items:center;text-align:center;font-weight:600;font-size:13px"><span>'+ic('scan').replace('<svg','<svg style="width:40px;height:40px;display:block;margin:0 auto 6px"')+'Оплатить<br>по QR</span></div></div>'+
   '<div style="height:14px"></div>'+note('Виджет появится в мобильной версии для iPhone и Android. Баланс на виджете можно скрыть.')+'</div>';
 
@@ -1215,7 +1228,7 @@ const GATE_TXT={quick:{topup:'пополнять кошелёк',transfer:'пе�
 function needGate(a,p){ if(S.reg) return false; if(ONB.includes(S.route.n)) return false; if(GUEST_OK.has(a)) return false;
   if(a==='go' && GUEST_ROUTES.includes(p)) return false; if(a==='quick' && p==='erip') return false; return true; }
 function gate(a,p){ closeSheet(); let t=GATE_TXT[a]; if(t&&typeof t==='object') t=t[p]; t=t||'пользоваться этой функцией';
-  sheet('<div class="idvis" style="height:120px;margin-top:0">'+LOGO('fill',30)+'</div><h3 class="h1" style="font-size:21px">Откройте кошелёк</h3><p class="lead">Чтобы '+t+', нужен кошелёк Neo Pay. Это около 5 минут: телефон, паспорт и селфи для иностранцев или МСИ для граждан РБ.</p>'+
+  sheet('<div class="idvis" style="height:120px;margin-top:0">'+LOGO('',30)+'</div><h3 class="h1" style="font-size:21px">Откройте кошелёк</h3><p class="lead">Чтобы '+t+', нужен кошелёк Neo Pay. Это около 5 минут: телефон, паспорт и селфи для иностранцев или МСИ для граждан РБ.</p>'+
    '<button class="btn" data-a="startOpen">Открыть кошелёк</button><div style="height:8px"></div><button class="btn ghost" data-a="demoLogin">Уже есть кошелёк — войти</button>'); }
 const SKEY='np-state-v1';
 function saveState(){ if(!S||!S.reg||!S.hasPin) return; try{ const o=Object.assign({},S,{route:null,stack:[],flow:null,presenter:{on:false,i:0},pin:'',pinFor:null});
@@ -1542,17 +1555,18 @@ const SPLASH={1:'Пиксели',2:'Скобки',3:'Живой градиент
 function splashV(){ try{ return localStorage.getItem('np-splash')||'1'; }catch(e){ return '1'; } }
 function splashHTML(v){
   if(v==='2') return '<div class="splash sp2"><div class="wm"><span class="c2"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45"/></svg><i>neo</i></span><span class="tail">pay</span><span class="dot"></span></div><div class="sub">Электронные деньги</div></div>';
-  if(v==='3') return '<div class="splash sp3"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>'+LOGO('inv',50)+'<div class="sub">Электронные деньги</div></div>';
+  if(v==='3') return '<div class="splash sp3"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>'+LOGO('inv',48)+'<div class="sub">Электронные деньги</div></div>';
   const cols=['#241453','#520BA7','#723DD6','#CFC4FE','#BFAEFE','#01C583','#57DFD3','#520BA7','#723DD6','#241453','#BFAEFE','#57DFD3','#CFC4FE','#723DD6','#01C583','#520BA7'];
   let px=''; for(let i=0;i<16;i++){ const r=Math.floor(i/4), c=i%4, ang=Math.random()*Math.PI*2, dist=180+Math.random()*160;
     px+='<span class="px" style="left:'+(c*27)+'px;top:'+(r*27)+'px;background:'+cols[i]+';--x:'+Math.round(Math.cos(ang)*dist)+'px;--y:'+Math.round(Math.sin(ang)*dist)+'px;--r:'+Math.round(Math.random()*360-180)+'deg;--d:'+(Math.random()*.35).toFixed(2)+'s"></span>'; }
-  return '<div class="splash sp1"><div class="grid">'+px+'</div><div class="core"><div class="orb2">neo</div><div class="wm">'+LOGO('',38)+'</div></div><div class="sub">Электронные деньги</div></div>';
+  return '<div class="splash sp1"><div class="grid">'+px+'</div><div class="core"><div class="orb2">'+LOGO('onlight',48)+'</div></div><div class="sub">Электронные деньги</div></div>';
 }
 function showSplash(){ const ph=document.querySelector('.phone'); const old=ph.querySelector('.splash'); if(old) old.remove();
   ph.insertAdjacentHTML('beforeend', splashHTML(splashV())); const el=ph.querySelector('.splash'); let done=false;
   const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const end=()=>{ if(done) return; done=true; el.classList.add('out'); setTimeout(()=>el.remove(),800); };
   el.addEventListener('click',end); setTimeout(end, rm?700:2700); }
+try{ document.getElementById('sideLogo').innerHTML=LOGO('',24); }catch(e){}
 function applyTheme(){ curTheme=S.theme; document.documentElement.dataset.theme=S.theme==='dark'?'dark':'light'; }
 try{ const t=localStorage.getItem('np-theme2'); if(t){ S.theme=t; } }catch(e){}
 applyTheme();
