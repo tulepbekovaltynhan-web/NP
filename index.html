@@ -341,6 +341,52 @@ textarea.inp{height:96px;padding:12px 16px;resize:none}
 .welcome .tag{color:var(--muted);font-size:15px;margin:0}
 .welcome .acts{width:100%;margin-top:auto;display:flex;flex-direction:column;gap:10px}
 .feat{display:none}
+.splash{position:absolute;inset:0;z-index:200;overflow:hidden;display:grid;place-items:center;transition:opacity .5s ease, transform .6s cubic-bezier(.6,0,.3,1)}
+.splash.out{opacity:0;pointer-events:none}
+.splash .wm{font-weight:800;font-size:46px;letter-spacing:-.04em;color:#241453;display:flex;align-items:baseline;white-space:nowrap}
+.splash .wm b{color:#520BA7}
+.splash .sub{position:absolute;left:0;right:0;bottom:calc(46px + env(safe-area-inset-bottom,0px));text-align:center;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#7C75A3;opacity:0;animation:spFade .6s 1.5s forwards}
+@keyframes spFade{to{opacity:1}}
+/* 1 — пиксели собираются в логотип */
+.sp1{background:radial-gradient(420px 320px at 0% 0%,#E6DDFF,transparent 70%),radial-gradient(380px 300px at 100% 100%,#D3FAF5,transparent 70%),#FAF8FF}
+.sp1 .grid{position:absolute;width:104px;height:104px;left:50%;top:50%;margin:-52px 0 0 -52px;animation:gridOut .45s 1.15s cubic-bezier(.6,0,.4,1) forwards}
+.sp1 .px{position:absolute;width:22px;height:22px;border-radius:6px;opacity:0;animation:pxIn .75s var(--d) cubic-bezier(.2,.9,.25,1.25) forwards}
+@keyframes pxIn{from{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(.3)}to{opacity:1;transform:none}}
+@keyframes gridOut{to{transform:scale(.25) rotate(45deg);opacity:0}}
+.sp1 .core{display:flex;flex-direction:column;align-items:center;gap:16px}
+.sp1 .orb2{width:104px;height:104px;border-radius:32px;background:linear-gradient(150deg,#723DD6,#520BA7 55%,#241453);display:grid;place-items:center;color:#fff;font-weight:800;font-size:34px;box-shadow:0 24px 50px rgba(82,11,167,.35);opacity:0;transform:scale(.4);animation:orbPop .6s 1.35s cubic-bezier(.2,.9,.25,1.3) forwards}
+@keyframes orbPop{to{opacity:1;transform:none}}
+.sp1 .wm{font-size:38px;opacity:0;transform:translateY(14px);animation:wmUp .5s 1.6s ease-out forwards}
+@keyframes wmUp{to{opacity:1;transform:none}}
+.sp1.out{transform:scale(1.08)}
+/* 2 — скобки раскрываются */
+.sp2{background:#fff}
+.sp2 .wm{font-size:60px}
+.sp2 .br{display:inline-block;color:#520BA7;opacity:0;animation:brIn .45s .15s cubic-bezier(.2,.9,.25,1.3) forwards}
+@keyframes brIn{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
+.sp2 .mid,.sp2 .tail{display:inline-block;overflow:hidden;max-width:0;vertical-align:bottom}
+.sp2 .mid{animation:open .6s .65s cubic-bezier(.7,0,.2,1) forwards}
+.sp2 .tail{animation:open .55s 1.25s cubic-bezier(.7,0,.2,1) forwards}
+@keyframes open{to{max-width:140px}}
+.sp2 .dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:#01C583;margin-left:4px;transform:scale(0);animation:dotPop .4s 1.75s cubic-bezier(.2,.9,.25,1.6) forwards}
+@keyframes dotPop{to{transform:scale(1)}}
+.sp2.out{opacity:0;transform:scale(1.6)}
+/* 3 — живой градиент и круговое раскрытие */
+.sp3{background:linear-gradient(165deg,#241453,#3A1690 55%,#520BA7);clip-path:circle(150% at 50% 48%);transition:clip-path .7s cubic-bezier(.7,0,.3,1),opacity .2s .6s}
+.sp3.out{clip-path:circle(0% at 50% 48%)}
+.sp3 .blob{position:absolute;width:260px;height:260px;border-radius:50%;filter:blur(40px);opacity:.85;left:50%;top:48%;margin:-130px 0 0 -130px;animation:orbit 3.2s linear infinite}
+.sp3 .blob.b1{background:#723DD6;--o:70px}
+.sp3 .blob.b2{background:#57DFD3;--o:-80px;animation-duration:3.8s;animation-direction:reverse;opacity:.55}
+.sp3 .blob.b3{background:#01C583;--o:90px;animation-duration:4.4s;opacity:.4;width:180px;height:180px;margin:-90px 0 0 -90px}
+@keyframes orbit{from{transform:rotate(0) translateX(var(--o))}to{transform:rotate(360deg) translateX(var(--o))}}
+.sp3 .wm{position:relative;color:#fff;font-size:52px;opacity:0;filter:blur(10px);animation:wmIn .9s .35s ease-out forwards}
+.sp3 .wm b{color:#CFC4FE}
+@keyframes wmIn{to{opacity:1;filter:none}}
+.sp3 .wm{overflow:hidden;padding:6px 10px}
+.sp3 .wm::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.6) 50%,transparent 65%);opacity:0;transform:translateX(-120%);animation:shine 1s 1.25s ease-in-out forwards}
+@keyframes shine{0%{opacity:0;transform:translateX(-120%)}15%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateX(120%)}}
+.sp3 .sub{color:#BFAEFE}
+@media (prefers-reduced-motion: reduce){ .splash *{animation-duration:.01s!important;animation-delay:0s!important} }
 .pinrow{display:flex;justify-content:center;gap:16px;margin:26px 0 10px}
 .pinrow i{width:15px;height:15px;border-radius:50%;border:2px solid var(--lav2)}
 .pinrow i.on{background:var(--violet);border-color:var(--violet)}
@@ -524,7 +570,7 @@ function demoAccount(type){
   if(type==='nonres') S.notif.unshift({title:'Лира подешевела на 3%',text:'Хорошее время пополнить кошелёк перед поездкой',date:new Date()});
   S.goals = type==='nonres'? [{id:'g1',name:'Отпуск в Турции',icon:'plane',target:150000,saved:4000}] : [{id:'g1',name:'Новый телефон',icon:'phone',target:120000,saved:5000}];
   S.pchats = {c1:[{me:false,t:'Привет! Спасибо, что выручил'}]};
-  S.route={n:'home',p:{}}; S.stack=[];
+  S.hasPin=true; S.route={n:'home',p:{}}; S.stack=[];
 }
 S = fresh();
 const P_ = () => PEOPLE[S.type];
@@ -983,9 +1029,11 @@ V.screening = () => { const k=S.route.p.k||0; const items=['Перечень л�
    '<div class="list">'+items.map((t,i)=>'<div class="row"><span class="ico '+(i<k?'green':'')+'">'+ic(i<k?'check':'search')+'</span><span class="grow"><span class="t1" style="display:block;white-space:normal">'+t+'</span><span class="t2" style="display:block">'+(i<k?'Совпадений нет':i===k?'Проверяем…':'Ожидает')+'</span></span></div>').join('')+'</div></div>'; };
 
 V.lock = () => { const p=P_(); const len=S.pin.length;
-  return '<div class="welcome" style="justify-content:flex-start"><div class="mark" style="margin:30px 0 0"><span class="avatar" style="width:72px;height:72px;font-size:22px">'+p.init+'</span><div class="h1" style="font-size:22px;margin:0">Здравствуйте, '+p.name.split(' ')[0]+'</div><p class="tag">Введите код доступа</p></div>'+
-   '<div class="pinrow">'+[0,1,2,3].map(i=>'<i class="'+(i<len?'on':'')+'"></i>').join('')+'</div>'+keypad('lock')+
-   '<button class="btn ghost" data-a="faceLogin" style="margin-top:6px">'+ic('face')+'Войти по Face ID</button><p class="small" style="margin-top:10px">Демо: подойдёт любой код</p></div>'; };
+  return '<div class="pad" style="text-align:center;padding-top:28px"><span class="avatar" style="width:72px;height:72px;font-size:22px;margin:0 auto 12px;display:grid">'+p.init+'</span>'+
+   '<div class="h1" style="font-size:22px;margin:0">Здравствуйте, '+p.name.split(' ')[0]+'</div><p class="lead" style="margin:6px 0 0">Введите код доступа</p>'+
+   '<div class="pinrow">'+[0,1,2,3].map(i=>'<i class="'+(i<len?'on':'')+'"></i>').join('')+'</div></div>'+keypad('lock')+
+   '<div class="pad" style="text-align:center;padding-top:4px"><button class="btn ghost" data-a="faceLogin">'+ic('face')+'Войти по Face ID</button>'+
+   '<p class="small" style="margin:12px 0 0">Демо: подойдёт любой код · <button data-a="logoutAll" style="color:var(--accent);font-weight:600">Не вы? Выйти</button></p></div>'; };
 
 V.devices = () => hdr('Устройства')+'<div class="pad"><div class="list">'+
   row({icon:'phone',tone:'green',t1:'iPhone 15 · это устройство',t2:'Минск · активно сейчас'})+row({icon:'phone',t1:'Samsung Galaxy S23',t2:'Москва · 3 дня назад'})+'</div><div style="height:14px"></div>'+
@@ -1101,7 +1149,12 @@ function renderTabbar(){ const tb=document.getElementById('tabbar'); const on=TA
   tb.innerHTML=t.map(x=> x[0]==='qr' ? '<button class="tab qr" data-a="tab" data-p="qr" aria-label="Оплатить по QR"><span class="qrbtn">'+ic('scan')+'</span>QR</button>' :
     '<button class="tab '+(S.route.n===x[0]?'on':'')+'" data-a="tab" data-p="'+x[0]+'">'+ic(x[1])+x[2]+'</button>').join(''); }
 
-function render(){
+const SKEY='np-state-v1';
+function saveState(){ if(!S||!S.reg||!S.hasPin) return; try{ const o=Object.assign({},S,{route:null,stack:[],flow:null,presenter:{on:false,i:0},pin:'',pinFor:null});
+  localStorage.setItem(SKEY, JSON.stringify(o,function(k,v){ const x=this[k]; return x instanceof Date?{$d:+x}:v; })); }catch(e){} }
+function loadState(){ try{ const t=localStorage.getItem(SKEY); if(!t) return null; return JSON.parse(t,(k,v)=>v&&typeof v==='object'&&v.$d!=null?new Date(v.$d):v); }catch(e){ return null; } }
+function clearState(){ try{ localStorage.removeItem(SKEY); }catch(e){} }
+function render(){ saveState();
   const sc=document.getElementById('screen');
   const v=V[S.route.n]; sc.innerHTML = v ? v() : '';
   renderTabbar(); renderPresenter(); bindSlider();
@@ -1246,7 +1299,7 @@ const A = {
   key:(p)=>{ const [tg,k]=p.split(':');
     if(tg==='lock'){ if(k==='del') S.pin=S.pin.slice(0,-1); else if(S.pin.length<4) S.pin+=k; render(); if(S.pin.length===4) setTimeout(()=>{ S.pin=''; home(); },250); return; }
     if(tg==='pin'){ if(k==='del') S.pin=S.pin.slice(0,-1); else if(S.pin.length<4) S.pin+=k; render();
-      if(S.pin.length===4){ const f=S.pinFor; setTimeout(()=>{ S.pin=''; if(f.next==='consents'){ go('consents',{}, {replace:true}); toast('Face ID включён','Вход и подтверждения по лицу','face'); } else if(f.next==='finish'){ S.stack.pop(); finish(S.flow); } else if(f.next==='unblock'){ S.blocked=false; notify('Кошелёк разблокирован','Операции снова доступны'); home(); } },250); }
+      if(S.pin.length===4){ const f=S.pinFor; setTimeout(()=>{ S.pin=''; if(f.next==='consents'){ S.hasPin=true; go('consents',{}, {replace:true}); toast('Face ID включён','Вход и подтверждения по лицу','face'); } else if(f.next==='finish'){ S.stack.pop(); finish(S.flow); } else if(f.next==='unblock'){ S.blocked=false; notify('Кошелёк разблокирован','Операции снова доступны'); home(); } },250); }
       return; }
     let a=S.flow.amt||''; if(k==='del') a=a.slice(0,-1); else if(k===','){ if(!a.includes(',')) a=(a||'0')+','; } else { if(a.includes(',')&&a.split(',')[1].length>=2) return; if(a==='0') a=''; if(a.replace(',','').length>=8) return; a+=k; }
     S.flow.amt=a; render(); },
@@ -1338,7 +1391,9 @@ const A = {
   doBlock:()=>{ closeSheet(); S.blocked=true; compLog('warn','Клиент заблокировал кошелёк','Блокировка по инициативе клиента. Операции приостановлены.'); notify('Кошелёк заблокирован','По вашему запросу. Разблокировать — в профиле'); render(); },
   unblock:()=>{ S.pinFor={title:'Разблокировка',text:'Введите код доступа, чтобы разблокировать кошелёк.',next:'unblock'}; S.pin=''; go('pin'); },
   theme:()=>{ S.theme=S.theme==='dark'?'light':'dark'; applyTheme(); render(); },
-  reset:()=>{ const pr=S.presenter; S=fresh(); S.theme=curTheme; S.presenter={on:false,i:0}; render(); },
+  splashNext:()=>{ const n=String(splashV()%3+1); try{ localStorage.setItem('np-splash',n); }catch(e){} closeSheet(); showSplash(); },
+  logoutAll:()=>{ clearState(); S=fresh(); S.theme=curTheme; S.route={n:'welcome',p:{}}; render(); },
+  reset:()=>{ clearState(); const pr=S.presenter; S=fresh(); S.theme=curTheme; S.presenter={on:false,i:0}; render(); },
   copy:(p)=>copyText(p),
   closeSheet:()=>closeSheet(),
   sheetTariffs:()=>{ const F=CFG.fee; sheet('<h3>Тарифы (условные)</h3><div class="card" style="padding:4px 16px">'+
@@ -1361,7 +1416,7 @@ const A = {
     '<button class="row" data-a="tglMis"><span class="ico warn">'+ic('alert')+'</span><span class="grow"><span class="t1" style="display:block">ФИО не совпало при СБП</span><span class="t2" style="display:block">Для первого пополнения нерезидента</span></span><span class="toggle '+(S.fioMismatch?'on':'')+'"></span></button>'+
     row({icon:'sliders',tone:'warn',t1:'Подвести к суточному лимиту',t2:'На сегодня останется 50 BYN',a:'nearLimit'})+
     row({icon:'bell',t1:'Уведомление о выгодном курсе',t2:'«Лира подешевела на 3%»',a:'rateAlert'})+row({icon:'zap',t1:'Имитировать оплату через ЕРИП',t2:'Придёт 50,00 BYN, как из приложения банка',a:'simErip'})+row({icon:'lock',t1:'Экран входа',t2:'Показать вход по коду',a:'lockNow'})+row({icon:'plus',t1:'Добавить 500 BYN на баланс',a:'addBal'})+
-    row({icon:'logout',t1:'Сбросить всё',a:'reset'})+'</div><p class="small" style="margin:12px 0 0">Порог двух факторов в демо — '+money(CFG.mfaThreshold)+' BYN (в реальности — 100 базовых величин). Курсы и комиссии условные.</p>'); },
+    row({icon:'star',t1:'Заставка: '+SPLASH[splashV()],t2:'Нажмите, чтобы переключить вариант и посмотреть',a:'splashNext'})+row({icon:'logout',t1:'Сбросить всё',a:'reset'})+'</div><p class="small" style="margin:12px 0 0">Порог двух факторов в демо — '+money(CFG.mfaThreshold)+' BYN (в реальности — 100 базовых величин). Курсы и комиссии условные.</p>'); },
   demoAcc:(p)=>{ closeSheet(); const pr=S.presenter; demoAccount(p); S.presenter=pr; render(); toast(p==='res'?'Резидент РБ':'Нерезидент','Демо-аккаунт загружен','user'); },
   goSheet:(p)=>{ closeSheet(); if(!S.reg){ demoAccount('nonres'); } S.stack=[{n:'home',p:{}}]; S.route={n:p,p:{}}; render(); },
   merchant:()=>{ closeSheet(); if(!S.reg) demoAccount('res'); if(S.route.n!=='merchant') S.stack=[{n:'home',p:{}}]; S.msum=S.msum||'12,00'; S.route={n:'merchant',p:{state:'new'}}; render(); },
@@ -1413,12 +1468,29 @@ document.addEventListener('input', e=>{
   if(k==='q'){ const pos=e.target.selectionStart; render(); const q=document.getElementById('q'); if(q){ q.focus(); q.setSelectionRange(pos,pos);} }
 });
 
+const SPLASH={1:'Пиксели',2:'Скобки',3:'Живой градиент'};
+function splashV(){ try{ return localStorage.getItem('np-splash')||'1'; }catch(e){ return '1'; } }
+function splashHTML(v){
+  if(v==='2') return '<div class="splash sp2"><div class="wm"><span class="br">(</span><span class="mid">neo</span><span class="br">)</span><span class="tail">pay</span><span class="dot"></span></div><div class="sub">Электронные деньги</div></div>';
+  if(v==='3') return '<div class="splash sp3"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><div class="wm">(neo<b>)</b>pay</div><div class="sub">Электронные деньги</div></div>';
+  const cols=['#241453','#520BA7','#723DD6','#CFC4FE','#BFAEFE','#01C583','#57DFD3','#520BA7','#723DD6','#241453','#BFAEFE','#57DFD3','#CFC4FE','#723DD6','#01C583','#520BA7'];
+  let px=''; for(let i=0;i<16;i++){ const r=Math.floor(i/4), c=i%4, ang=Math.random()*Math.PI*2, dist=180+Math.random()*160;
+    px+='<span class="px" style="left:'+(c*27)+'px;top:'+(r*27)+'px;background:'+cols[i]+';--x:'+Math.round(Math.cos(ang)*dist)+'px;--y:'+Math.round(Math.sin(ang)*dist)+'px;--r:'+Math.round(Math.random()*360-180)+'deg;--d:'+(Math.random()*.35).toFixed(2)+'s"></span>'; }
+  return '<div class="splash sp1"><div class="grid">'+px+'</div><div class="core"><div class="orb2">(n)</div><div class="wm">(neo<b>)</b>pay</div></div><div class="sub">Электронные деньги</div></div>';
+}
+function showSplash(){ const ph=document.querySelector('.phone'); const old=ph.querySelector('.splash'); if(old) old.remove();
+  ph.insertAdjacentHTML('beforeend', splashHTML(splashV())); const el=ph.querySelector('.splash'); let done=false;
+  const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const end=()=>{ if(done) return; done=true; el.classList.add('out'); setTimeout(()=>el.remove(),800); };
+  el.addEventListener('click',end); setTimeout(end, rm?700:2700); }
 function applyTheme(){ curTheme=S.theme; document.documentElement.dataset.theme=S.theme==='dark'?'dark':'light'; }
 try{ const t=localStorage.getItem('np-theme2'); if(t){ S.theme=t; } }catch(e){}
 applyTheme();
 function tick(){ const d=new Date(); document.getElementById('clock').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'); }
 tick(); setInterval(tick,30000);
-render();
+(function boot(){ const saved=loadState();
+  if(saved){ const th=S.theme; S=Object.assign(fresh(),saved); S.theme=th; S.route={n:'lock',p:{}}; S.stack=[]; S.pin=''; }
+  render(); showSplash(); })();
 })();
 </script>
 
