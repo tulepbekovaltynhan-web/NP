@@ -56,7 +56,20 @@ input,select,textarea{font:inherit;color:var(--fg)}
     radial-gradient(360px 300px at 20% 100%, var(--blob3), transparent 70%), var(--bg);
   box-shadow:0 40px 90px rgba(82,11,167,.22)}
 @media (max-width:820px){ .side{display:none} }
-@media (max-width:480px){ body{padding:0} .phone{width:100%;height:100%;border:0;border-radius:0;box-shadow:none} }
+@media (max-width:500px), (hover:none) and (pointer:coarse){
+  html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none}
+  body{padding:0!important;display:block;background:var(--bg)}
+  .side{display:none}
+  .phone{position:fixed;inset:0;width:auto;height:auto;border:0;border-radius:0;box-shadow:none;
+    padding-top:env(safe-area-inset-top,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+  .statusbar #clock{display:none}
+  .statusbar{height:30px!important;justify-content:center!important;padding:0 16px!important}
+  .tabbar{bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+  .phone.has-tabs .screen{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .screen{padding-bottom:env(safe-area-inset-bottom,0px)}
+  .inp,input,select,textarea{font-size:16px}
+}
+body{margin:0}
 .statusbar{flex:none;height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:13px;font-weight:700}
 .demo-pill{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(255,243,220,.85);color:var(--warn);padding:4px 10px;border-radius:99px;border:1px solid rgba(176,114,16,.18)}
 :root[data-theme="dark"] .demo-pill{background:var(--warn-bg)}
@@ -248,6 +261,20 @@ textarea.inp{height:96px;padding:12px 16px;resize:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{width:42px;height:42px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--violet);animation:spin .8s linear infinite}
 .steps{display:flex;gap:6px;margin:4px 0 14px}
+.mrzcam{height:230px;margin:6px 0 16px;border-radius:26px;background:radial-gradient(circle at 50% 40%,#3B2A8A,#140D33);position:relative;overflow:hidden;display:grid;place-items:center;box-shadow:var(--shadow2)}
+.mrzcam .pg{width:240px;height:160px;border-radius:12px;background:linear-gradient(160deg,#F4F0FF,#DCD3FA);position:relative;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.mrzcam .ph{position:absolute;left:14px;top:16px;width:52px;height:66px;border-radius:6px;background:linear-gradient(160deg,#BFAEFE,#723DD6)}
+.mrzcam .ln{position:absolute;left:78px;right:14px;height:6px;border-radius:3px;background:#C9BEF5}
+.mrzcam .mrz{position:absolute;left:10px;right:10px;bottom:10px;font:600 8.5px/1.35 'JetBrains Mono',monospace;color:#241453;letter-spacing:.04em;padding:4px 6px;border-radius:6px;border:2px solid var(--teal);white-space:nowrap;overflow:hidden}
+.mrzcam .scan{position:absolute;left:14px;right:14px;height:2px;background:var(--teal);box-shadow:0 0 14px var(--teal);animation:scan 1.6s ease-in-out infinite alternate}
+.iprog{height:8px;border-radius:5px;background:rgba(124,117,163,.18);overflow:hidden;margin:8px 0 6px}
+.iprog i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--violet),var(--teal));transition:width .4s}
+.slist{margin:4px 0 0}
+.slist .row{min-height:52px}
+.idphoto{width:64px;height:80px;border-radius:10px;background:linear-gradient(160deg,#BFAEFE,#723DD6);display:grid;place-items:center;color:#fff;flex:none}
+.idphoto svg{width:34px;height:34px}
+.demo-fill{font-size:12px;color:var(--muted);margin:-4px 0 12px}
+.cue{font-size:19px;font-weight:700;text-align:center;margin:4px 0 6px;min-height:28px}
 .steps i{flex:1;height:5px;border-radius:3px;background:rgba(124,117,163,.2)}
 .steps i.on{background:var(--green)} .steps i.cur{background:var(--violet)}
 
@@ -613,21 +640,83 @@ V.consents = () => { const c=S.consents, needBio=S.type==='nonres', needMsi=S.ty
    t('msi','Получение данных из МСИ','Межбанковская система идентификации ЕРИП',needMsi)+
    t('xb','Передача данных банку-партнёру в РФ','Для пополнения и вывода через СБП: ФИО и номер кошелька',needBio)+
   '</div><div style="height:16px"></div><button class="btn" data-a="go" data-p="anketa" '+(ok?'':'disabled')+'>Продолжить</button></div>'; };
-V.id = () => { const st=S.idStep;
-  const bar='<div class="steps">'+[0,1,2].map(i=>'<i class="'+(i<st?'on':i===st?'cur':'')+'"></i>').join('')+'</div>';
+V.id = () => { const st=S.idStep, r=S.route.p, sub=r.s||'';
+  const bar=(n,of)=>'<div class="steps">'+Array.from({length:of},(_,i)=>'<i class="'+(i<n?'on':i===n?'cur':'')+'"></i>').join('')+'</div>';
+  const P=P_();
+  const kv=(a,b)=>'<div class="kv"><span>'+a+'</span><span style="text-align:right">'+b+'</span></div>';
+  const fld=(id,lab,val,ph,extra)=>'<div class="field"><label for="'+id+'">'+lab+'</label><input class="inp num" id="'+id+'" data-in="'+id+'" placeholder="'+(ph||'')+'" value="'+esc(S[id]!=null?S[id]:val)+'" '+(extra||'')+'></div>';
+  const prog=(pct,lines,cur)=>'<div class="iprog"><i style="width:'+pct+'%"></i></div><div class="small" style="text-align:right;margin-bottom:6px">'+pct+'%</div><div class="list slist">'+lines.map((t,i)=>'<div class="row"><span class="ico '+(i<cur?'green':'')+'">'+(i<cur?ic('check'):i===cur?'<span class="spinner" style="width:18px;height:18px;border-width:3px"></span>':ic('clock'))+'</span><span class="grow"><span class="t1" style="display:block;white-space:normal">'+t+'</span></span></div>').join('')+'</div>';
+
+  /* ===== Резидент РБ — через МСИ ===== */
   if(S.type==='res'){
-    return hdr('Идентификация')+'<div class="pad">'+(S.route.p.busy?
-      '<div class="idvis"><div class="spinner"></div></div><h3 class="h1" style="font-size:22px">Получаем данные из МСИ…</h3><p class="lead">Проверяем ваши данные в межбанковской системе идентификации.</p>':
-      '<div class="idvis">'+ic('shield').replace('<svg','<svg style="width:80px;height:80px;color:var(--violet)"')+'</div><h3 class="h1" style="font-size:22px">Подтвердите личность через МСИ</h3><p class="lead">Данные паспорта получим из межбанковской системы идентификации — ничего вводить не нужно.</p><button class="btn" data-a="msi">Подтвердить через МСИ</button>')+'</div>';
+    if(!sub) return hdr('Идентификация')+'<div class="pad">'+bar(0,4)+
+      '<div class="idvis">'+ic('shield').replace('<svg','<svg style="width:80px;height:80px;color:var(--violet)"')+'</div>'+
+      '<h3 class="h1" style="font-size:22px">Подтвердите личность через МСИ</h3>'+
+      '<p class="lead">МСИ — межбанковская система идентификации. Ваши паспортные данные туда уже внёс банк, в котором у вас есть счёт. Мы запросим их с вашего согласия — ходить в офис и фотографировать паспорт не нужно.</p>'+
+      '<div class="list">'+row({icon:'user',t1:'1. Личный номер и телефон',t2:'Как в паспорте и в вашем банке'})+row({icon:'lock',t1:'2. Код из SMS',t2:'Подтверждаете согласие на передачу данных'})+row({icon:'doc',t1:'3. Проверяете данные',t2:'Которые пришли из МСИ'})+row({icon:'search',t1:'4. Проверка по перечням',t2:'Обязательна по закону, автоматически'})+'</div>'+
+      '<div style="height:16px"></div><button class="btn" data-a="idn" data-p="login">Начать</button>'+
+      '<div style="height:14px"></div><div class="list">'+row({icon:'card',t1:'Нет данных в МСИ?',t2:'По ID-карте или биометрическому паспорту РБ — в проработке',a:'soonId'})+'</div></div>';
+    if(sub==='login') return hdr('Шаг 1 из 4 · Данные для МСИ')+'<div class="pad">'+bar(0,4)+
+      '<p class="lead">Введите личный номер — он есть в паспорте (14 символов) — и телефон, который вы оставляли в банке.</p>'+
+      '<p class="demo-fill">В демо поля уже заполнены — можно сразу нажать «Получить код».</p>'+
+      fld('msiId','Личный (идентификационный) номер','3030994A012PB7','3000000A000PB0','style="text-transform:uppercase;letter-spacing:.08em" maxlength="14"')+
+      fld('msiPhone','Телефон','+375 29 555-77-11','+375 29 000-00-00','inputmode="tel"')+
+      note('Как именно клиент входит в МСИ (личный номер + SMS, логин банка, ID-карта) — уточняем у ЕРИП при подключении. Экран показывает принцип.','','info')+
+      '<div style="height:16px"></div><button class="btn" data-a="idn" data-p="code">Получить код</button></div>';
+    if(sub==='code') return hdr('Шаг 2 из 4 · Код из SMS')+'<div class="pad">'+bar(1,4)+
+      '<p class="lead">МСИ отправила код на '+esc(S.msiPhone||'+375 29 555-77-11')+'. Вводя код, вы соглашаетесь передать свои данные из МСИ в Neo Pay.</p>'+
+      '<p class="demo-fill">В демо подойдёт любой код.</p>'+
+      fld('msiCode','Код','','0000','inputmode="numeric" maxlength="6" style="letter-spacing:.4em;font-size:22px;text-align:center"')+
+      '<div style="height:12px"></div><button class="btn" data-a="msi">Подтвердить</button><div style="height:10px"></div><button class="btn ghost" data-a="resend">Отправить ещё раз</button></div>';
+    if(sub==='busy') return hdr('Шаг 3 из 4 · Получаем данные',{noBack:true})+'<div class="pad">'+bar(2,4)+
+      '<h3 class="h1" style="font-size:22px">Запрашиваем данные в МСИ</h3><p class="lead">Обычно занимает несколько секунд.</p>'+
+      prog(r.pct||0,['Подключение к МСИ','Проверка кода и согласия','Получение паспортных данных','Получение адреса регистрации'],r.k||0)+'</div>';
+    if(sub==='data') return hdr('Шаг 3 из 4 · Проверьте данные')+'<div class="pad">'+bar(2,4)+
+      '<p class="lead">Эти данные пришли из МСИ. Если всё верно — подтвердите.</p>'+
+      '<div class="card" style="padding:4px 16px 8px">'+kv('ФИО',P.name)+kv('Дата рождения',P.dob)+kv('Личный номер',esc((S.msiId||'3030994A012PB7').toUpperCase()))+kv('Документ','ID-карта РБ<br>№ AB1234567')+kv('Выдан','05.03.2022, Фрунзенский РУВД г. Минска')+kv('Действителен до','05.03.2032')+kv('Гражданство','Беларусь')+kv('Адрес регистрации','г. Минск, ул. Примерная, 1–10')+'</div>'+
+      '<div style="height:16px"></div><button class="btn" data-a="msiOk">Всё верно</button><div style="height:10px"></div><button class="btn ghost" data-a="msiErr">Есть ошибка</button></div>';
+    return '';
   }
-  if(st===0) return hdr('Шаг 1 из 3 · Паспорт')+'<div class="pad">'+bar+(S.route.p.busy?
-      '<div class="idvis"><div class="passport">PASSPORT</div></div><h3 class="h1" style="font-size:22px">Читаем чип паспорта…</h3><p class="lead">Не убирайте паспорт от телефона.</p>':
-      '<div class="idvis"><div class="passport">PASSPORT</div></div><h3 class="h1" style="font-size:22px">Приложите загранпаспорт к телефону</h3><p class="lead">Откройте страницу с фото и прижмите её к задней стороне телефона. Данные считаются с чипа.</p><div class="stack"><button class="btn" data-a="nfc">'+ic('nfc')+'Считать чип</button><button class="btn ghost" data-a="nfc" data-p="photo">'+ic('camera')+'Нет чипа — сфотографировать паспорт</button></div>')+'</div>';
-  if(st===1) return hdr('Шаг 2 из 3 · Селфи')+'<div class="pad">'+bar+
-      '<div class="card" style="padding:12px 16px;margin-bottom:14px"><div class="kv"><span>ФИО</span><span>'+P_().name+'</span></div><div class="kv"><span>Гражданство</span><span>'+P_().citizenship+'</span></div><div class="kv"><span>Документ</span><span>'+P_().doc+'</span></div><div class="kv"><span>Дата рождения</span><span>'+P_().dob+'</span></div></div>'+
-      (S.route.p.busy?'<div class="idvis"><div class="face">'+ic('face')+'<span class="ring"></span></div></div><p class="lead" style="text-align:center">Сверяем лицо с фото из паспорта…</p>':
-      '<div class="idvis"><div class="face">'+ic('face')+'</div></div><p class="lead">Сделайте селфи. Проверим, что это живой человек, и сравним лицо с фото из чипа.</p><button class="btn" data-a="selfie">'+ic('camera')+'Сделать селфи</button>')+'</div>';
-  return hdr('Шаг 3 из 3 · Первое пополнение')+'<div class="pad">'+bar+
+
+  /* ===== Нерезидент — биометрическая удалённая идентификация ===== */
+  if(st===0){
+    if(!sub) return hdr('Шаг 1 из 4 · Паспорт')+'<div class="pad">'+bar(0,4)+
+      '<p class="lead">Понадобится <b>загранпаспорт с чипом</b> (значок ▣ на обложке). Сначала сфотографируем страницу с фото — из нижних строк возьмём ключ, без которого чип не открывается.</p>'+
+      '<div class="mrzcam"><div class="pg"><span class="ph"></span><span class="ln" style="top:18px"></span><span class="ln" style="top:32px;right:60px"></span><span class="ln" style="top:46px"></span><span class="ln" style="top:60px;right:80px"></span><div class="mrz">P&lt;RUSSMIRNOV&lt;&lt;IVAN&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>7612345674RUS9004127M3104157&lt;&lt;&lt;</div><span class="scan" style="bottom:22px"></span></div></div>'+
+      '<div class="stack"><button class="btn" data-a="mrzScan">'+ic('camera')+'Сфотографировать страницу</button><button class="btn ghost" data-a="idn" data-p="manual">Ввести данные вручную</button></div>'+
+      '<div style="height:14px"></div><div class="list">'+row({icon:'alert',t1:'В паспорте нет чипа',t2:'Проверка по фото документа — в проработке',a:'nfc',p:'photo'})+'</div></div>';
+    if(sub==='mrzbusy') return hdr('Шаг 1 из 4 · Паспорт',{noBack:true})+'<div class="pad">'+bar(0,4)+
+      '<div class="mrzcam"><div class="pg"><span class="ph"></span><span class="ln" style="top:18px"></span><span class="ln" style="top:32px;right:60px"></span><span class="ln" style="top:46px"></span><div class="mrz">P&lt;RUSSMIRNOV&lt;&lt;IVAN&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>7612345674RUS9004127M3104157&lt;&lt;&lt;</div><span class="scan"></span></div></div><p class="cue">Держите телефон ровно…</p><p class="lead" style="text-align:center">Распознаём нижние строки страницы.</p></div>';
+    if(sub==='manual'||sub==='mrzok') return hdr('Шаг 1 из 4 · Данные паспорта')+'<div class="pad">'+bar(0,4)+
+      (sub==='mrzok'?note('Страница распознана. Проверьте, что всё совпадает с паспортом.','good','check'):'<p class="lead">Введите данные со страницы с фото.</p>')+'<div style="height:10px"></div>'+
+      '<p class="demo-fill">В демо поля уже заполнены.</p>'+
+      fld('pNum','Номер паспорта','76 1234567','00 0000000')+fld('pDob','Дата рождения','12.04.1990','ДД.ММ.ГГГГ','inputmode="numeric"')+fld('pExp','Действителен до','15.04.2031','ДД.ММ.ГГГГ','inputmode="numeric"')+
+      '<div style="height:6px"></div><button class="btn" data-a="idn" data-p="nfc">Дальше — считать чип</button></div>';
+    if(sub==='nfc') return hdr('Шаг 2 из 4 · Чип паспорта')+'<div class="pad">'+bar(1,4)+
+      '<div class="idvis"><div class="passport">PASSPORT</div></div><h3 class="h1" style="font-size:22px">Приложите паспорт к телефону</h3>'+
+      '<p class="lead">Закройте паспорт и прижмите обложку к верхней части задней стороны iPhone. Не двигайте, пока не дойдёт до 100%.</p>'+
+      '<button class="btn" data-a="nfc">'+ic('nfc')+'Начать чтение</button></div>';
+    if(sub==='nfcbusy') return hdr('Шаг 2 из 4 · Чип паспорта',{noBack:true})+'<div class="pad">'+bar(1,4)+
+      '<div class="idvis" style="height:150px"><div class="passport" style="width:90px;height:120px">PASSPORT</div></div><p class="cue">Не убирайте паспорт</p>'+
+      prog(r.pct||0,['Открываем чип ключом из страницы','Читаем данные владельца','Читаем фото из чипа','Проверяем электронную подпись документа'],r.k||0)+'</div>';
+    if(sub==='chip') return hdr('Шаг 2 из 4 · Данные из чипа')+'<div class="pad">'+bar(1,4)+
+      note('Чип прочитан. Подпись документа действительна — паспорт настоящий.','good','check')+'<div style="height:12px"></div>'+
+      '<div class="card" style="padding:14px 16px;display:flex;gap:14px;align-items:flex-start"><span class="idphoto">'+ic('user')+'</span><div class="grow">'+
+      '<div class="t1">'+P.name+'</div><div class="t2">'+P.citizenship+' · '+P.dob+'</div><div class="t2">'+P.doc+'</div><div class="t2">Действителен до 15.04.2031</div></div></div>'+
+      '<div style="height:16px"></div><button class="btn" data-a="idStep1">Всё верно — дальше селфи</button></div>';
+  }
+  if(st===1){
+    if(!sub) return hdr('Шаг 3 из 4 · Селфи')+'<div class="pad">'+bar(2,4)+
+      '<div class="idvis"><div class="face">'+ic('face')+'</div></div>'+
+      '<p class="lead">Сравним ваше лицо с фото из чипа и проверим, что перед камерой живой человек, а не фото или видео.</p>'+
+      '<div class="list">'+row({icon:'sun',t1:'Хороший свет',t2:'Лицо освещено спереди'})+row({icon:'eyeoff',t1:'Без очков и головного убора',t2:'Лицо полностью видно'})+row({icon:'repeat',t1:'Следуйте подсказкам',t2:'Попросим повернуть голову и моргнуть'})+'</div>'+
+      '<div style="height:16px"></div><button class="btn" data-a="selfie">'+ic('camera')+'Начать</button></div>';
+    if(sub==='live') return hdr('Шаг 3 из 4 · Селфи',{noBack:true})+'<div class="pad">'+bar(2,4)+
+      '<div class="idvis"><div class="face">'+ic('face')+'<span class="ring"></span></div></div>'+
+      '<p class="cue">'+(['Посмотрите прямо в камеру','Медленно поверните голову влево','Теперь вправо','Моргните','Сравниваем с фото из чипа…'][r.k||0])+'</p>'+
+      '<div class="iprog"><i style="width:'+((r.k||0)*25)+'%"></i></div></div>';
+  }
+  return hdr('Шаг 4 из 4 · Первое пополнение')+'<div class="pad">'+bar(3,4)+
     '<div class="success" style="padding:8px 0 10px"><div class="check pop">'+ic('check')+'</div><h3 class="h1" style="font-size:22px">Личность подтверждена</h3><p class="lead">Осталось одно: пополните кошелёк через СБП <b>со своего счёта</b> в банке РФ. Сверим ФИО отправителя с паспортом — и кошелёк заработает полностью.</p></div>'+
     note('Сверка ФИО по первому переводу — дополнительная проверка данных. Если ФИО не совпадёт, деньги вернутся отправителю.')+
     '<div style="height:14px"></div><button class="btn" data-a="startFlow" data-p="topup_sbp">Пополнить через СБП</button><div style="height:10px"></div><button class="btn ghost" data-a="home">Позже</button>'+
@@ -636,7 +725,7 @@ V.id = () => { const st=S.idStep;
 
 V.home = () => { const p=P_();
   let todo='';
-  if(!S.active){ const done = S.type==='nonres' ? 2 : 0; todo='<div class="todo"><div class="t1">Что осталось</div><div class="prog"><i style="width:'+(S.type==='nonres'?67:33)+'%"></i></div><div class="t2" style="white-space:normal">'+(S.type==='nonres'?'Шаг 3 из 3: первое пополнение через СБП со своего счёта':'Подтвердите личность через МСИ')+'</div><div style="height:12px"></div><button class="btn" style="height:46px" data-a="'+(S.type==='nonres'?'startFlow':'toId')+'" data-p="topup_sbp">Продолжить</button></div>'; }
+  if(!S.active){ const done = S.type==='nonres' ? 2 : 0; todo='<div class="todo"><div class="t1">Что осталось</div><div class="prog"><i style="width:'+(S.type==='nonres'?75:10)+'%"></i></div><div class="t2" style="white-space:normal">'+(S.type==='nonres'?'Шаг 4 из 4: первое пополнение через СБП со своего счёта':'Подтвердите личность через МСИ')+'</div><div style="height:12px"></div><button class="btn" style="height:46px" data-a="'+(S.type==='nonres'?'startFlow':'toId')+'" data-p="topup_sbp">Продолжить</button></div>'; }
   const qa = [['down','Пополнить','topup'],['send','Перевести','transfer'],['zap','ЕРИП','erip'],['bank','Вывести','withdraw']];
   return '<div class="top"><button class="avatar" data-a="tab" data-p="profile" aria-label="Профиль">'+p.init+'</button><div class="grow"><div class="t2">Добрый день,</div><div class="t1">'+p.name.split(' ')[0]+'</div></div>'+
    '<button class="iconbtn bell" data-a="notifs" aria-label="Уведомления">'+ic('bell')+(S.unread?'<span class="badge">'+S.unread+'</span>':'')+'</button></div>'+
@@ -889,8 +978,8 @@ V.anketa = () => { const a=S.anketa;
    '<div style="height:16px"></div><button class="btn" data-a="toId" '+(ok?'':'disabled')+'>Продолжить</button></div>'; };
 
 V.screening = () => { const k=S.route.p.k||0; const items=['Перечень лиц, причастных к террористической деятельности','Санкционные перечни','Публичные должностные лица'];
-  return hdr('Проверка',{noBack:true})+'<div class="pad"><div class="idvis">'+(k<3?'<div class="spinner"></div>':'<div class="check pop" style="margin:0">'+ic('check')+'</div>')+'</div>'+
-   '<h3 class="h1" style="font-size:22px">'+(k<3?'Проверяем по перечням…':'Проверка пройдена')+'</h3><p class="lead">Это обязательная проверка для всех клиентов. Ничего делать не нужно.</p>'+
+  return hdr('Последний шаг · Проверка',{noBack:true})+'<div class="pad"><div class="idvis">'+(k<3?'<div class="spinner"></div>':'<div class="check pop" style="margin:0">'+ic('check')+'</div>')+'</div>'+
+   '<h3 class="h1" style="font-size:22px">'+(k<3?'Проверяем по перечням…':'Проверка пройдена')+'</h3><p class="lead">Обязательна по закону о предотвращении отмывания денег (165-З) для каждого клиента. Ничего делать не нужно — несколько секунд.</p>'+
    '<div class="list">'+items.map((t,i)=>'<div class="row"><span class="ico '+(i<k?'green':'')+'">'+ic(i<k?'check':'search')+'</span><span class="grow"><span class="t1" style="display:block;white-space:normal">'+t+'</span><span class="t2" style="display:block">'+(i<k?'Совпадений нет':i===k?'Проверяем…':'Ожидает')+'</span></span></div>').join('')+'</div></div>'; };
 
 V.lock = () => { const p=P_(); const len=S.pin.length;
@@ -1137,9 +1226,17 @@ const A = {
   pickCitizen:(p)=>{ S.type=p; S.pinFor={title:'Код доступа',text:'Придумайте 4 цифры для входа в приложение. Потом включим вход по Face ID.',next:'consents'}; S.pin=''; go('pin'); },
   consent:(k)=>{ S.consents[k]=!S.consents[k]; render(); },
   toId:()=>{ S.reg=true; S.idStep=S.idStep||0; go('id'); },
-  msi:()=>{ S.route.p={busy:true}; render(); setTimeout(()=>{ compLog('info','Идентификация через МСИ','Данные резидента получены из МСИ.'); runScreening(()=>{ S.active=true; S.idStep=3; S.stack=[]; S.route={n:'fail',p:{title:'Кошелёк открыт',text:'Личность подтверждена через МСИ, проверка по перечням пройдена. Можно пополнять через ЕРИП или картой.',tone:'',icon:'check',btn2:['Пополнить','goTopup']}}; render(); }); },1500); },
-  nfc:(p)=>{ S.route.p={busy:true}; render(); setTimeout(()=>{ S.idStep=1; S.route={n:'id',p:{}}; render(); if(p==='photo') toast('Паспорт сфотографирован','Проверили подлинность по изображению','camera'); else toast('Чип считан','Данные паспорта получены','nfc'); },1500); },
-  selfie:()=>{ S.route.p={busy:true}; render(); setTimeout(()=>{ compLog('info','Биометрическая идентификация','Проверка «живости» пройдена, лицо совпало с фото из чипа.'); runScreening(()=>{ S.idStep=2; S.route={n:'id',p:{}}; render(); }); },1700); },
+  resend:()=>toast('Код отправлен ещё раз','SMS от МСИ придёт в течение минуты','lock'),
+  soonId:()=>toast('В проработке','Идентификация по биометрическому документу РБ (Указ 148, п. 9) — следующий этап','info'),
+  msiErr:()=>sheet('<h3 class="h1" style="font-size:20px">Данные с ошибкой?</h3><p class="lead">Исправить данные в МСИ может только банк, который их внёс. Обратитесь в свой банк, затем вернитесь сюда — продолжим с этого же шага.</p><button class="btn" data-a="closeSheet">Понятно</button>'),
+  idn:(x)=>{ S.route.p={s:x}; render(); },
+  msi:()=>{ const steps=[25,50,75,100]; S.route.p={s:'busy',pct:0,k:0}; render(); let i=0; const t=()=>{ if(S.route.n!=='id'||S.route.p.s!=='busy') return; S.route.p.pct=steps[i]; S.route.p.k=i+1; render(); i++; if(i<4) setTimeout(t,650); else setTimeout(()=>{ compLog('info','Идентификация через МСИ','Клиент подтвердил согласие кодом; данные резидента получены из МСИ.'); S.route.p={s:'data'}; render(); },500); }; setTimeout(t,500); },
+  msiOk:()=>{ runScreening(()=>{ S.active=true; S.idStep=3; S.stack=[]; S.route={n:'fail',p:{title:'Кошелёк открыт',text:'Личность подтверждена через МСИ, проверка по перечням пройдена. Можно пополнять через ЕРИП или картой.',tone:'',icon:'check',btn2:['Пополнить','goTopup']}}; render(); }); },
+  mrzScan:()=>{ S.route.p={s:'mrzbusy'}; render(); setTimeout(()=>{ if(S.route.n==='id'&&S.route.p.s==='mrzbusy'){ S.route.p={s:'mrzok'}; render(); } },1600); },
+  nfc:(p)=>{ if(p==='photo'){ toast('В проработке','Проверка паспорта без чипа — по фото в одном сеансе с селфи (Инструкция 379, п. 10)','info'); return; }
+    S.route.p={s:'nfcbusy',pct:0,k:0}; render(); const steps=[20,55,85,100]; let i=0; const t=()=>{ if(S.route.n!=='id'||S.route.p.s!=='nfcbusy') return; S.route.p.pct=steps[i]; S.route.p.k=i+1; render(); i++; if(i<4) setTimeout(t,700); else setTimeout(()=>{ S.route.p={s:'chip'}; render(); },400); }; setTimeout(t,500); },
+  idStep1:()=>{ S.idStep=1; S.route={n:'id',p:{}}; render(); },
+  selfie:()=>{ S.route.p={s:'live',k:0}; render(); let k=0; const t=()=>{ if(S.route.n!=='id'||S.route.p.s!=='live') return; k++; S.route.p.k=k; render(); if(k<4) setTimeout(t,1100); else setTimeout(()=>{ compLog('info','Биометрическая идентификация','Проверка «живости» пройдена, лицо совпало с фото из чипа.'); runScreening(()=>{ S.idStep=2; S.route={n:'id',p:{}}; render(); }); },1300); }; setTimeout(t,1100); },
   soon:()=>toast('В проработке','Зависит от договора с банком-партнёром в РФ','info'),
   hideBal:()=>{ S.hide=!S.hide; render(); },
   quick:(p)=>{ if(p==='topup') go('topup'); else if(p==='withdraw'){ if(!S.active){ startFlow('withdraw_rb'); return;} go('withdraw'); } else if(p==='transfer'){ if(!S.active){ startFlow('transfer'); return;} go('transfer'); } else if(p==='erip'){ if(!S.active){ startFlow('erip'); return;} go('erip'); } },
